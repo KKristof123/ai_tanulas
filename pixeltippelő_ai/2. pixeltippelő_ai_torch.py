@@ -30,6 +30,7 @@ for i in range(100000):
 
     if i%1000==0: print(f"Kör {i:3d} | AI Tippje: {y2:.6f} | Hiba (Loss): {L:.8f}")
 
+
     # --- BACKWARD PASS (visszaterjesztés) - deriválás a láncszabállyal ---
     L.backward() # automatikus deriválás a láncszabállyal
 
@@ -43,7 +44,6 @@ for i in range(100000):
         b.grad.zero_()
 
 print("\n--- TANULÁS UTÁNI VÉGEREDMÉNY ---")
-print(f"Végső tipp 1000 kör után: {y2:.6f}")
 print(f"Végső súly (w): {w:.4f} | Végső torzítás (b): {b:.4f}")
 
 # =====================================================================
@@ -63,15 +63,23 @@ while True:
     try:
         input_x = float(user_input)
         if input_x < 0 or input_x > 1:
-            print("Kérlek, csak 0 vagy 1 értéket adj meg!")
+            print(f"Kérlek, csak 0 vagy 1 értéket adj meg!\n")
             continue
 
         with torch.no_grad():
             z = input_x * w + b
             tipp = 1 / (1 + e(-z))  # AI tipp
 
-        print(f"-> AI belső összege (z): {z:.4f}")
-        print(f"-> AI végső tippje (valószínűség): {tipp:.4f} ({tipp*100:.2f}%)")
+        print(f"-> AI belső összege (z): {z:.4f} | AI tippje: {tipp:.4f}")
+        
+        if tipp < 0.5:
+            vegso_tipp = 0
+            esely = (1 - tipp) * 100
+        else:
+            vegso_tipp = 1
+            esely = tipp * 100
+
+        print(f"-> AI végső tippje (valószínűség): {vegso_tipp:.4f} ({esely:.2f}%)\n")
 
     except ValueError:
-        print("Érvénytelen bemenet! Kérlek, csak számot adj meg (0 vagy 1).")
+        print(f"Érvénytelen bemenet! Kérlek, csak számot adj meg (0 vagy 1)\n")

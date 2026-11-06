@@ -26,10 +26,10 @@ for i in range(100000):
     # --- FORWARD PASS (előre terjesztés) ---
     z = x * w + b
 
-    y2 = 1 / (1 + e(-z)) # ai tippje / sigmoid függvény
+    y2 = 1 / (1 + e(-z))      # ai tippje / sigmoid függvény
     
     #L = - (y * math.log(y2) + (1 - y) * math.log(1 - y2))
-    L = 1/2*(y2 - y)**2          # költség függvény / kiszámoljuk a veszteséget (loss)
+    L = 1/2*(y2 - y)**2       # költség függvény / kiszámoljuk a veszteséget (loss)
 
     """if L < 0.0000005:
         t = 50
@@ -41,12 +41,12 @@ for i in range(100000):
     if i%1000==0: print(f"Kör {i:3d} | AI Tippje: {y2:.6f} | Hiba (Loss): {L:.8f}")
 
     # --- BACKWARD PASS (visszaterjesztés) - deriválás a láncszabállyal ---
-    L_y2 = 1*(y2 - y)            # a veszteség deriváltja az y2 szerint
-    y2_z = y2 * (1 - y2)         # a sigmoid függvény deriváltja a z szerint
-    z_w = x                      # a z deriváltja a w szerint
-    z_b = 1                      # a z deriváltja a b szerint
+    L_y2 = 1*(y2 - y)         # a veszteség deriváltja az y2 szerint
+    y2_z = y2 * (1 - y2)      # a sigmoid függvény deriváltja a z szerint
+    z_w = x                   # a z deriváltja a w szerint
+    z_b = 1                   # a z deriváltja a b szerint
 
-    # A lánc szabálya szerint a veszteség deriváltja a w és b szerint:
+    # A lánc szabálya szerint a veszteség deriváltja a w és b szerint (gradiens):
     L_w = L_y2 * y2_z * z_w
     L_b = L_y2 * y2_z * z_b
 

@@ -10,6 +10,7 @@ adatok = torch.tensor([[1.0, 1.0], [0.0, 0.0]]) # tanító adatok (bemenet, cél
 w = torch.tensor(0.5, requires_grad=True) # súly (weight) a pixelhez
 b = torch.tensor(0.1, requires_grad=True) # torzítás/eltolás (bias) a pixelhez
 t = 50 # tanulási ráta (learning rate)
+e = torch.exp
 
 # =====================================================================
 # 2. FÁZIS: AZ AI TAMÍTÁSA
@@ -23,18 +24,16 @@ for i in range(100000):
     # --- FORWARD PASS (előre terjesztés) ---
     z = x * w + b
 
-    y2 = 1 / (1 + torch.exp(-z)) # ai tippje / sigmoid függvény
+    y2 = 1 / (1 + e(-z)) # ai tippje / sigmoid függvény
     
-    #L = - (y * math.log(y2) + (1 - y) * math.log(1 - y2))
     L = 1/2*(y2 - y)**2          # költség függvény / kiszámoljuk a veszteséget (loss)
-
 
     if i%1000==0: print(f"Kör {i:3d} | AI Tippje: {y2:.6f} | Hiba (Loss): {L:.8f}")
 
     # --- BACKWARD PASS (visszaterjesztés) - deriválás a láncszabállyal ---
     L.backward() # automatikus deriválás a láncszabállyal
 
-    with torch.no_grad():  # súlyok frissítése a tanulási ráta segítségével, gradiens számítás nélkül
+    with torch.no_grad():  # gradiens számítás nélkül
         # --- OPTIMIZATION (súlyok frissítése a tanulási ráta segítségével) ---
         w -= t * w.grad
         b -= t * b.grad
@@ -67,8 +66,9 @@ while True:
             print("Kérlek, csak 0 vagy 1 értéket adj meg!")
             continue
 
-        z = input_x * w + b
-        tipp = 1 / (1 + torch.exp(-z))  # AI tipp
+        with torch.no_grad():
+            z = input_x * w + b
+            tipp = 1 / (1 + e(-z))  # AI tipp
 
         print(f"-> AI belső összege (z): {z:.4f}")
         print(f"-> AI végső tippje (valószínűség): {tipp:.4f} ({tipp*100:.2f}%)")
